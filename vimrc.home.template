@@ -1,0 +1,97 @@
+" scope: ~/.vimrc
+" 用户定制化配置(主要是插件配置, 本地开发使用)
+" 不包含自动补全
+"在终端启用256色(vim-airline 插件 需要颜色)
+set t_Co=256
+" -----------------------------------------------------------------------------
+" 插件配置
+" -----------------------------------------------------------------------------
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+"set rtp+=$HOME/.vim/bundle/Vundle.vim/
+"call vundle#begin('$HOME/.vim/bundle/')
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+" -----------------------------------------------------------------------------
+"  < SrcExpl 插件配置 >
+" -----------------------------------------------------------------------------
+Plugin 'wesleyche/SrcExpl'
+" 增强源代码浏览，其功能就像Windows中的"Source Insight"
+nmap <F3> :SrcExplToggle<CR>                "打开/闭浏览窗口
+" -----------------------------------------------------------------------------
+" -----------------------------------------------------------------------------
+"  < vim-airline 插件配置 >
+" -----------------------------------------------------------------------------
+" 状态栏插件，更好的状态栏效果
+Plugin 'bling/vim-airline'
+set laststatus=2
+" -----------------------------------------------------------------------------
+"  < minibufexpl.vim 插件配置 >
+" -----------------------------------------------------------------------------
+Plugin 'fholgado/minibufexpl.vim'
+" 不显示标签栏
+" set showtabline=0
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplMapWindowNavArrows = 1
+let g:miniBufExplMapCTabSwitchBufs = 1
+let g:miniBufExplModSelTarget = 1
+let g:miniBufExplMoreThanOne=0
+
+map <F8> :MBEbp<CR>
+map <F9> :MBEbn<CR>
+map <Leader>bd :MBEbd<CR>
+map <Leader>bq :MBEbd
+" -----------------------------------------------------------------------------
+"  < undotree 插件配置 >
+" -----------------------------------------------------------------------------
+Plugin 'mbbill/undotree'
+if has("persistent_undo")
+    set undodir=~/.undodir/
+    set undofile
+endif
+nnoremap <leader>u :UndotreeToggle<CR>
+let g:undotree_SetFocusWhenToggle=1
+let g:undotree_WindowLayout = 4
+set undofile
+
+" NOTE: this will prevent undotree closed then jump to minibufexpl
+function! g:CloseUndotree()
+    call UndotreeHide()
+    call ex#window#goto_edit_window()
+endfunction
+
+function g:Undotree_CustomMap()
+    if has('gui_running')
+        nnoremap <silent> <script> <buffer> <ESC> :call g:CloseUndotree()<CR>
+    else
+        nnoremap <silent> <script> <buffer> <leader><ESC> :call g:CloseUndotree()<CR>
+    endif
+endfunction
+" -----------------------------------------------------------------------------
+"  < Autoformat 插件配置 >
+" -----------------------------------------------------------------------------
+Plugin 'Chiel92/vim-autoformat'
+noremap <F6> :Autoformat<CR>
+let g:autoformat_verbosemode=1
+let g:formatdef_harttle = '"astyle --style=attach --pad-oper --indent=spaces -xc --break-blocks"'
+let g:formatters_cpp = ['harttle']
+let g:formatters_java = ['harttle']
+set tags=./tags;
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+call plug#begin('~/.vim/plugged')
+" -----------------------------------------------------------------------------
+"  < fzf.vim 插件配置 >
+" -----------------------------------------------------------------------------
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+" \f快速搜索 \b打开buffer
+nnoremap <silent> <Leader>f :Files<CR>
+nnoremap <silent> <Leader>b :Buffers<CR>
+call plug#end()
+

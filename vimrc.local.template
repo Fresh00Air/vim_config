@@ -1,0 +1,123 @@
+" scope: /etc/vim/vimrc.local
+" 该配置为默认配置(不包含任何插件, 适用于服务器)
+" -----------------------------------------------------------------------------
+"  < 格式配置 >
+" -----------------------------------------------------------------------------
+let mapleader='\'
+"粘贴时保持格式
+set paste
+"关闭鼠标模式
+set mouse-=a
+"打开语法高亮
+syntax on
+"打开文件类型检测功能
+filetype on
+"允许使用插件
+filetype plugin on
+filetype plugin indent on
+"在终端启用256色
+"set t_Co=256
+"关闭vi模式
+set nocp
+"取消VI兼容，VI键盘模式不易用
+set nocompatible
+"显示行号, 或set number
+" set number
+"历史命令保存行数
+set history=100
+"当文件被外部改变时自动读取
+set autoread
+"取消自动备份及产生swp文件
+set nobackup
+set nowritebackup
+set noswapfile
+"高亮光标所在行
+"set cursorline
+set laststatus=2
+"标尺功能，显示当前光标所在行列号
+set ruler
+"设置命令行高度为3
+set cmdheight=3
+"高亮显示匹配的括号
+set showmatch
+"在搜索的时候忽略大小写
+set ignorecase
+"高亮被搜索的句子
+set hlsearch
+"在搜索时，输入的词句的逐字符高亮（类似firefox的搜索）
+set incsearch
+"制表符为4
+set tabstop=4
+"统一缩进为4
+set softtabstop=4
+set shiftwidth=4
+set smarttab
+" tab替换为4个空格
+set expandtab
+"不够显示自动换行
+set wrap
+"光标移动到buffer的顶部和底部时保持3行距离, 或set so=3
+set scrolloff=3
+" -----------------------------------------------------------------------------
+"  < 编码配置 >
+" -----------------------------------------------------------------------------
+set ff=unix
+"设定默认解码
+set enc=utf-8
+set fenc=utf-8
+set fencs=utf-8,usc-bom,chinese,euc-jp,gb18030,gbk,gb2312,cp936
+"文件格式，默认 ffs=dos,unix
+set fileformat=unix                                   "设置新（当前）文件的<EOL>格式，可以更改，如：dos（windows系统常用）
+set fileformats=unix,dos,mac                          "给出文件的<EOL>格式类型
+"解决consle输出乱码
+"解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+" 如果中文乱码, 开启该配置
+"language messages zh_CN.utf-8
+" -----------------------------------------------------------------------------
+" < 按键配置 >
+" -----------------------------------------------------------------------------
+" 通过默认的leader键+2或者4来控制空格数
+nnoremap <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2<CR>
+nnoremap <Leader>4 :set tabstop=4 softtabstop=4 shiftwidth=4<CR>
+
+" 常规模式下输入 cS 清除行尾空格
+nmap cB :%s/\s\+$//g<CR>:noh<CR>
+
+" 常规模式下输入 cM 清除行尾 ^M 符号
+nmap cM :%s/\r$//g<CR>:noh<CR>
+" 常规模式下用空格键来开关光标行所在折叠（注：zR 展开所有折叠，zM 关闭所有折叠）
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+set foldmethod=indent                                 "indent 折叠方式
+set foldenable                                        "启用折叠
+" -----------------------------------------------------------------------------
+"  < C，C++ 按F5编译运行 >
+" -----------------------------------------------------------------------------
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+    exec "w"
+    if &filetype == 'c'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!time java %<"
+    elseif &filetype == 'sh'
+        :!time bash %
+    elseif &filetype == 'python'
+        exec "!time python3 %"
+    elseif &filetype == 'html'
+        exec "!chrome % &"
+    elseif &filetype == 'go'
+        exec "!go build %<"
+        exec "!time go run %"
+    elseif &filetype == 'mkd'
+        exec "!~/.vim/markdown.pl % > %.html &"
+        exec "!chrome %.html &"
+    endif
+endfunc
+
